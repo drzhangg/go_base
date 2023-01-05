@@ -1,0 +1,40 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prometheus-{{ .Namespace }}
+  namespace: test
+  labels:
+    prometheus: k8s
+    role: {{ .Role }}
+{{ if .EmptyFlag }}
+spec: {}
+{{ else }}
+spec:
+  groups:
+    - name: group
+      rules:
+      {{ range .GroupRules }}
+        - alert: "{{ .Name }}"
+          annotations:
+            description: "{{ .Description }}"
+            keyInformation: "{{ .KeyInformation }}"
+          expr: {{ .Expr }}
+          for: {{ .For }}
+          labels:
+            namespace: "{{ .Namespace }}"
+            name: "{{ .Name }}"
+            ruleType: "{{ .RuleType }}"
+            email: "{{ .Email }}"
+            scope: "{{ .Scope }}"
+            zone: "{{ .Zone }}"
+            zoneName: "{{ .ZoneName }}"
+            id: "{{ .Id }}"
+            metricId: "{{ .MetricId }}"
+            metricName: "{{ .MetricName }}"
+            styles: "{{ .Styles }}"
+            for: "{{ .For }}"
+            threshold: "{{ .Threshold }}"
+            severity: "{{ .Severity }}"
+            selectAll: "{{ .SelectAll }}"
+      {{end}}
+{{end}}

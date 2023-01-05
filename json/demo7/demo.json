@@ -1,0 +1,13 @@
+{
+  "data": {
+    "name": "zhangsan",
+    "age": 26,
+    "address": "上海"
+  },
+  "status": {
+    "message": "testss",
+    "deployStatus": "success",
+    "internalName": "internalName",
+    "commitId": "123321"
+  }
+}

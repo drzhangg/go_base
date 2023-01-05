@@ -1,0 +1,16 @@
+{
+  "apiVersion": "operator.tigera.io/v1",
+  "kind": "APIServer",
+  "metadata": {
+    "creationTimestamp": "2022-06-27T14:54:57Z",
+    "generation": 1,
+    "name": "default",
+    "resourceVersion": "11680",
+    "selfLink": "/apis/operator.tigera.io/v1/apiservers/default",
+    "uid": "ea4d6063-ae54-4c7b-a1f0-12fb03cea2ab"
+  },
+  "spec": {},
+  "status": {
+    "state": "Ready"
+  }
+}

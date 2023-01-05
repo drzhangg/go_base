@@ -1,0 +1,9 @@
+{
+  "credentials": {
+    "username": "u_test0526_01",
+    "name": "u_test0526_01",
+    "email": "test0526@qq.com",
+    "roleType": "ADMIN"
+  },
+  "syslog_drain_url": null
+}
