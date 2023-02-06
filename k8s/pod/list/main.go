@@ -38,7 +38,9 @@ func main() {
 	}
 
 	for _,v := range pl.Items{
-		fmt.Println("name::",v.Name)
+		//fmt.Println("name::",v.Name)
+		fmt.Println("kind::",v.Kind)
+		fmt.Println("version::",v.APIVersion)
 	}
 
 	//fmt.Println(pl.Items)
