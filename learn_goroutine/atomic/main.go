@@ -43,7 +43,7 @@ func main() {
 			cond.Wait()   // 等待变更信号
 
 			c := config.Load().(Config)  // 读取新的配置
-			fmt.Printf("new config:%+v\n",c)
+			fmt.Printf("new config.conf:%+v\n",c)
 			cond.L.Unlock()
 		}
 	}()

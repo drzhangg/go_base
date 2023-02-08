@@ -50,7 +50,7 @@ func main() {
 
 
 	//var (
-	//	config  clientv3.Config
+	//	config.conf  clientv3.Config
 	//	err     error
 	//	client  *clientv3.Client
 	//)
@@ -58,13 +58,13 @@ func main() {
 	//ctx := context.Background()
 	//
 	////配置
-	//config = clientv3.Config{
+	//config.conf = clientv3.Config{
 	//	Endpoints:   []string{"150.158.87.137:2379"},
 	//	DialTimeout: time.Second * 5,
 	//}
 	//
 	////连接 创建一个客户端
-	//if client, err = clientv3.New(config); err != nil {
+	//if client, err = clientv3.New(config.conf); err != nil {
 	//	fmt.Println(err)
 	//	return
 	//}

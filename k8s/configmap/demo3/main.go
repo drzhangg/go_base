@@ -15,7 +15,7 @@ import (
 // 代码从configmap中读取值
 func main() {
 	h := os.Getenv("HOME")
-	f := filepath.Join(h, ".kube", "config")
+	f := filepath.Join(h, ".kube", "config.conf")
 	kubeconfig := flag.String("kubeconfig", f, "(optional) absolute path to the kubeconfig file")
 
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)

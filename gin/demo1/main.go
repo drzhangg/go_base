@@ -36,7 +36,7 @@ func getEnv(c *gin.Context) {
 
 func command(c *gin.Context) {
 
-	finfos, err := ioutil.ReadDir("/etc/config")
+	finfos, err := ioutil.ReadDir("/etc/config.conf")
 	if err != nil {
 		fmt.Println("err:", err)
 	}

@@ -92,7 +92,7 @@ func main() {
 
 			configMap,ok := d.Object.(*v1.ConfigMap)
 			if !ok {
-				return fmt.Errorf("not config: %T", d.Object)
+				return fmt.Errorf("not config.conf: %T", d.Object)
 			}
 			fmt.Printf("%s: %s\n", d.Type, configMap.Name)
 		}

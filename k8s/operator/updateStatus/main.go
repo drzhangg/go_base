@@ -19,7 +19,7 @@ import (
 func main() {
 	h := os.Getenv("HOME")
 
-	f := filepath.Join(h, ".kube", "config")
+	f := filepath.Join(h, ".kube", "config.conf")
 	kubeconfig := flag.String("kubeconfig", f, "(optional) absolute path to the kubeconfig file")
 
 	masterUrl := ""
@@ -30,7 +30,7 @@ func main() {
 
 	client, err := dynamic.NewForConfig(config)
 	if err != nil {
-		fmt.Println("new config err:", err)
+		fmt.Println("new config.conf err:", err)
 		return
 	}
 

@@ -36,14 +36,14 @@ spec:
           command:
           - "/bin/prometheus"
           args:
-            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--config.conf.file=/etc/prometheus/prometheus.yml"
           ports:
             - containerPort: 9090
               protocol: TCP
           volumeMounts:
             - mountPath: "/etc/prometheus"
-              name: prometheus-config
+              name: prometheus-config.conf
       volumes:
-        - name: prometheus-config
+        - name: prometheus-config.conf
           configMap:
-            name: prometheus-config
+            name: prometheus-config.conf

@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	cmd := exec.Command("ls", "/etc/config/")
+	cmd := exec.Command("ls", "/etc/config.conf/")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("combined out:\n%s\n", string(out))
