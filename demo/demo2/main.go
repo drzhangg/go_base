@@ -2,7 +2,16 @@ package main
 
 import "fmt"
 
+type Config struct {
+	
+}
+
+func (c *Config) NewConfig(name, ip string, Role []string) *Config{
+	return nil
+}
+
 func main() {
+
 	numbers := []int{1,3,2,6,4,5}
 	//fmt.Println(sort(nums))
 
