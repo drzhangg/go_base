@@ -2,6 +2,10 @@ package main
 
 import "fmt"
 
+type name struct {
+	data bool `json:"data",omity`
+}
+
 func function(index int, value int) int {
 
 	fmt.Println(index)
