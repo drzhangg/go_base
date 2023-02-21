@@ -44,9 +44,9 @@ func main() {
 	//	fmt.Println("item0 already exists")
 	//}
 
-	for i := 0; i < 100000; i++ {
-		rdb.Do(ctx,"bf.add","codehole",fmt.Sprintf("user%d",i))
-	}
+	//for i := 0; i < 100000; i++ {
+	//	rdb.Do(ctx,"bf.add","codehole",fmt.Sprintf("user%d",i))
+	//}
 
 
 
