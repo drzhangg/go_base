@@ -6,12 +6,23 @@ import (
 	"strings"
 )
 
+func IpToInt(ip string) int {
+	var result int
+
+	ips := strings.Split(ip, ".")
+	for i := 0; i < 4; i++ {
+		n, _ := strconv.Atoi(ips[i])
+		result += n << (8 * (3 - i))
+	}
+	return result
+}
+
 func ipToUint(ip string) uint {
 	var result uint
 
-	ips := strings.Split(ip,".")
+	ips := strings.Split(ip, ".")
 	for i := 0; i < 4; i++ {
-		oc,_ := strconv.Atoi(ips[i])
+		oc, _ := strconv.Atoi(ips[i])
 		result += uint(oc) << uint(8*(3-i))
 	}
 	return result
@@ -28,7 +39,7 @@ func ipToint(ip string) int {
 	result += ip2 << 8
 	result += ip1 << 16
 	result += ip0 << 24
-	return ip3 | ip2 << 8 | ip1 << 16 | ip0 << 24
+	return ip3 | ip2<<8 | ip1<<16 | ip0<<24
 }
 
 func ipToInt(ip string) uint32 {
@@ -46,4 +57,5 @@ func main() {
 	fmt.Println(ipToInt(ip))
 	fmt.Println(ipToint(ip))
 	fmt.Println(ipToUint(ip))
+	fmt.Println(IpToInt(ip))
 }
