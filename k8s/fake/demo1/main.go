@@ -5,6 +5,7 @@ import (
 	"fmt"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/fake"
 )
 
@@ -39,7 +40,7 @@ func main() {
 	
 }
 
-func getService(client *fake.Clientset, name, namespace string) (*v1.Service,error) {
+func getService(client kubernetes.Interface, name, namespace string) (*v1.Service,error) {
 
 	svc,err := client.CoreV1().Services(namespace).Get(context.Background(),name,metav1.GetOptions{})
 	if err != nil {
