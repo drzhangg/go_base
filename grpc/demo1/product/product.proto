@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-option go_package="demo1/product";
-
 package product;
 
 service ProductInfo {
