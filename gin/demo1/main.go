@@ -18,8 +18,23 @@ var (
 		Name: "http_requests_total",
 		Help: "Total number of HTTP requests.",
 	}, []string{"method", "path", "status"})
+
+	httpRequestDuration = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name: "http_request_duration_seconds",
+			Help: "Duration of HTTP requests in seconds",
+			Buckets: []float64{
+				0.1, 0.25, 0.5, 1, 2.5, 5, 10,
+			},
+		},
+		[]string{"code", "method"},
+	)
 )
 
+func init() {
+	prometheus.MustRegister(httpRequestsTotal)
+	prometheus.MustRegister(httpRequestDuration)
+}
 
 func monitorMetrics() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -31,7 +46,6 @@ func monitorMetrics() gin.HandlerFunc {
 
 		// 获得响应状态码
 		status := strconv.Itoa(c.Writer.Status())
-
 
 		// 记录指标
 		httpRequestsTotal.WithLabelValues(c.Request.Method, c.Request.URL.Path, status).Inc()
@@ -53,7 +67,6 @@ func hello(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]string{"name": name})
 }
-
 
 func getEnv(c *gin.Context) {
 
@@ -107,11 +120,11 @@ func createUser(c *gin.Context) {
 
 func deleteUser(c *gin.Context) {
 	username := c.Param("username")
-	if username == "jerry"{
-		c.JSON(200,"delete user success")
+	if username == "jerry" {
+		c.JSON(200, "delete user success")
 		return
 	}
-	c.JSON(500,"delete user failed")
+	c.JSON(500, "delete user failed")
 }
 
 func main() {
@@ -131,7 +144,7 @@ func main() {
 
 	r.GET("/command", command)
 
-	r.DELETE("/delete/:username",deleteUser)
+	r.DELETE("/delete/:username", deleteUser)
 
 	r.Run(":8181")
 }
