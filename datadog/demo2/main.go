@@ -7,19 +7,25 @@ import (
 	"net/http"
 )
 
-func init() {
-	tracer.Start(
-		tracer.WithService("test-svc"), tracer.WithEnv("test-env"))
-	defer tracer.Stop()
-}
+//func init() {
+//	tracer.Start(
+//		tracer.WithService("test-svc"), tracer.WithEnv("test-env"))
+//	defer tracer.Stop()
+//}
 
 func main() {
 	tracer.Start()
 	defer tracer.Stop()
 
-	r := gin.Default()
+	r := gin.New()
 
-	r.Use(gintrace.Middleware("test-svc"))
+	r.Use(gintrace.Middleware("test-svc3-new"))
+
+	r.GET("/hello", func(c *gin.Context) {
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"hello": "world",
+		})
+	})
 
 	r.GET("/getUser/:name", func(c *gin.Context) {
 		name := c.Param("name")
