@@ -4,16 +4,16 @@ go 1.17
 
 require (
 	github.com/spf13/cobra v1.3.0
-	k8s.io/api v0.26.1
-	k8s.io/apimachinery v0.26.1
-	k8s.io/client-go v0.26.1
+	k8s.io/api v0.25.0-alpha.2
+	k8s.io/apimachinery v0.25.0-alpha.2
+	k8s.io/client-go v0.25.0-alpha.2
 	k8s.io/kubectl v0.23.1
 )
 
 require (
 	github.com/creack/pty v1.1.11
 	github.com/eiannone/keyboard v0.0.0-20200508000154-caf4b762e807
-	github.com/gin-gonic/gin v1.9.0
+	github.com/gin-gonic/gin v1.7.7
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6
@@ -35,7 +35,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.7 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/afero v1.9.2 // indirect
-	github.com/spf13/viper v1.12.0
+	github.com/spf13/viper v1.10.1
 	github.com/subosito/gotenv v1.4.0 // indirect
 	golang.org/x/sync v0.1.0
 	golang.org/x/sys v0.6.0 // indirect
@@ -52,7 +52,7 @@ require (
 	github.com/DataDog/datadog-go v4.8.3+incompatible // indirect
 	github.com/DataDog/datadog-go/v5 v5.3.0 // indirect
 	github.com/DataDog/go-tuf v0.3.0--fix-localmeta-fork // indirect
-	github.com/DataDog/sketches-go v1.4.1 // indirect
+	github.com/DataDog/sketches-go v1.4.0 // indirect
 	github.com/MakeNowJust/heredoc v0.0.0-20170808103936-bb23615498cd // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -121,7 +121,7 @@ require (
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/prometheus/client_golang v1.14.0 // indirect
+	github.com/prometheus/client_golang v1.12.2 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
@@ -150,10 +150,10 @@ require (
 	golang.org/x/tools v0.7.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4 // indirect
 	google.golang.org/grpc v1.53.0 // indirect
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0 // indirect
 	google.golang.org/protobuf v1.29.1 // indirect
-	gopkg.in/DataDog/dd-trace-go.v1 v1.48.0 // indirect
+	gopkg.in/DataDog/dd-trace-go.v1 v1.40.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
