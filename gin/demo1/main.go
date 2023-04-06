@@ -32,8 +32,7 @@ var (
 )
 
 func init() {
-	prometheus.MustRegister(httpRequestsTotal)
-	prometheus.MustRegister(httpRequestDuration)
+	//prometheus.MustRegister(httpRequestsTotal,httpRequestDuration)
 }
 
 func monitorMetrics() gin.HandlerFunc {
