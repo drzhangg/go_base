@@ -3,16 +3,54 @@ package driver
 import (
 	"context"
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"k8s.io/klog"
 )
 
-func (*hostPath) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoRequest) (*csi.GetPluginInfoResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPluginInfo not implemented")
+type IdentityServer struct {
+
 }
-func (*hostPath) GetPluginCapabilities(ctx context.Context, req *csi.GetPluginCapabilitiesRequest) (*csi.GetPluginCapabilitiesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPluginCapabilities not implemented")
+
+func NewIdentityServer() *IdentityServer {
+	return &IdentityServer{}
 }
-func (*hostPath) Probe(ctx context.Context, req *csi.ProbeRequest) (*csi.ProbeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Probe not implemented")
+
+// GetPluginInfo 返回插件信息
+func (*IdentityServer) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoRequest) (*csi.GetPluginInfoResponse, error) {
+	klog.V(4).Infof("GetPluginInfo: called with args %+v", *req)
+
+	return &csi.GetPluginInfoResponse{
+		Name:          driverName,
+		VendorVersion: version,
+	},nil
+}
+
+// GetPluginCapabilities 返回插件支持的功能
+func (*IdentityServer) GetPluginCapabilities(ctx context.Context, req *csi.GetPluginCapabilitiesRequest) (*csi.GetPluginCapabilitiesResponse, error) {
+	klog.V(4).Infof("GetPluginCapabilities: called with args %+v", *req)
+
+	resp := &csi.GetPluginCapabilitiesResponse{
+		Capabilities: []*csi.PluginCapability{
+			{
+				Type: &csi.PluginCapability_Service_{
+					Service: &csi.PluginCapability_Service{
+						Type: csi.PluginCapability_Service_CONTROLLER_SERVICE,
+					},
+				},
+			},
+			{
+				Type: &csi.PluginCapability_Service_{
+					Service: &csi.PluginCapability_Service{
+						Type: csi.PluginCapability_Service_VOLUME_ACCESSIBILITY_CONSTRAINTS,
+					},
+				},
+			},
+		},
+	}
+	return resp,nil
+}
+
+// Probe 插件健康检测
+func (*IdentityServer) Probe(ctx context.Context, req *csi.ProbeRequest) (*csi.ProbeResponse, error) {
+	klog.V(4).Infof("Probe: called with args %+v", *req)
+	return &csi.ProbeResponse{}, nil
 }
