@@ -44,7 +44,7 @@ func getService(client kubernetes.Interface, name, namespace string) (*v1.Servic
 
 	svc,err := client.CoreV1().Services(namespace).Get(context.Background(),name,metav1.GetOptions{})
 	if err != nil {
-		return nil,fmt.Errorf(fmt.Sprintf("get service error:",err))
+		return nil,fmt.Errorf(fmt.Sprintf("get driver error:",err))
 	}
 	return svc,nil
 }
