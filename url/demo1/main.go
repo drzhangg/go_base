@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 )
 
@@ -20,4 +21,6 @@ func main() {
 		na := strings.Join(ns,"-")
 		fmt.Println("na:",na)
 	}
+
+	url.Parse("")
 }
