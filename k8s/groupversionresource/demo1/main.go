@@ -18,7 +18,7 @@ var vm = schema.GroupVersionResource{
 
 func main() {
 	h := os.Getenv("HOME")
-	f := filepath.Join(h, ".kube", "config.conf")
+	f := filepath.Join(h, ".kube", "config")
 	kubeconfig := flag.String("kubeconfig", f, "(optional) absolute path to the kubeconfig file")
 
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
@@ -31,6 +31,19 @@ func main() {
 		fmt.Println("asaqweqwe:", err)
 	}
 
-	clientset = clientset
+	discoveryClient := clientset.Discovery()
+
+	_,apiresources,err := discoveryClient.ServerGroupsAndResources()
+	if err != nil {
+		fmt.Println("get apiresources failed:",err)
+	}
+
+	for _, apiresource := range apiresources{
+		for _,v := range apiresource.APIResources{
+			fmt.Println(v.Name)
+		}
+	}
+
+
 
 }

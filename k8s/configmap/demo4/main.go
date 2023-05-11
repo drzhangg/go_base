@@ -13,7 +13,7 @@ import (
 
 func main() {
 	h := os.Getenv("HOME")
-	f := filepath.Join(h, ".kube", "config.conf")
+	f := filepath.Join(h, ".kube", "config")
 	kubeconfig := flag.String("kubeconfig", f, "(optional) absolute path to the kubeconfig file")
 
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
@@ -26,12 +26,12 @@ func main() {
 		fmt.Println("asaqweqwe:", err)
 	}
 
-	cm,err := clientset.CoreV1().ConfigMaps("default").Get(context.TODO(),"test-cm",v1.GetOptions{})
+	cm,err := clientset.CoreV1().ConfigMaps("test").Get(context.TODO(),"test-cm",v1.GetOptions{})
 	if err != nil {
 		fmt.Println("err:", err)
 	}
 
-	fmt.Println(cm.Data)
+	fmt.Println(cm.Data["address"])
 
 
 }
