@@ -26,14 +26,13 @@ func main() {
 		fmt.Println("asaqweqwe:", err)
 	}
 
-	deploys,err := clientset.AppsV1().Deployments("").List(context.TODO(),v1.ListOptions{
-		//LabelSelector: "control-plane",
-	})
+	nss,err := clientset.CoreV1().Namespaces().List(context.TODO(),v1.ListOptions{})
 	if err != nil {
 		fmt.Println("get deploy list err:", err)
+		return
 	}
 
-	for _,v := range deploys.Items{
+	for _,v := range nss.Items{
 		fmt.Println(v.Name)
 	}
 
