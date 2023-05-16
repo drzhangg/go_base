@@ -39,10 +39,10 @@ func main() {
 		fmt.Println(v.String())
 	}
 
-	// put
+	//put
 	//ctx, _ := context.WithTimeout(context.Background(), time.Second)
-	//_, err = cli.Put(ctx, "name", "dsb")
-	//cancel()
+	//_, err = cli.Put(ctx, "name", "jerry")
+	////cancel()
 	//if err != nil {
 	//	fmt.Printf("put to etcd failed, err:%v\n", err)
 	//	return
