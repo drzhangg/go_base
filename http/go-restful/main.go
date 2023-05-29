@@ -42,7 +42,7 @@ func (u UserResource) findUser(request *restful.Request, response *restful.Respo
 		response.AddHeader("Content-Type", "text/plain")
 		response.WriteErrorString(http.StatusNotFound, "User could not be found.")
 	} else {
-		response.WriteEntity(usr)
+		response.WriteAsJson(usr)
 	}
 }
 
