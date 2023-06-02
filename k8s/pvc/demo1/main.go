@@ -13,7 +13,7 @@ import (
 
 func main() {
 	h := os.Getenv("HOME")
-	f := filepath.Join(h, ".kube", "config.conf")
+	f := filepath.Join(h, ".kube", "config")
 	kubeconfig := flag.String("kubeconfig", f, "(optional) absolute path to the kubeconfig file")
 
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
