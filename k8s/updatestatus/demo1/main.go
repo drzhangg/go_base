@@ -86,7 +86,8 @@ func main() {
 
 	instanc.Status.AdminNamespace = "1111"
 
-	_,err = dynamicClient.Resource(devopsProject).Namespace("default").UpdateStatus(context.Background(),&unstructured.Unstructured{
+
+	_,err = dynamicClient.Resource(devopsProject).Namespace("default").Update(context.TODO(),&unstructured.Unstructured{
 		Object: map[string]interface{}{
 			"kind": instanc.Kind,
 			"apiVersion":instanc.APIVersion,
@@ -96,31 +97,34 @@ func main() {
 				"labels":instanc.Labels,
 				"managedFields":instanc.ManagedFields,
 				"annotations":instanc.Annotations,
+				"generateName": instanc.Name,
 			},
 			"spec":instanc.Spec,
-			"status":instanc.Status,
 		},
 	},metav1.UpdateOptions{})
 	if err != nil {
 		fmt.Println("update status err:",err)
 	}
 
-
-
-	//obj, err := dynamicClient.Resource(devopsProject).List(context.TODO(), metav1.ListOptions{})
+	//_,err = dynamicClient.Resource(devopsProject).Namespace("default").UpdateStatus(context.Background(),&unstructured.Unstructured{
+	//	Object: map[string]interface{}{
+	//		"kind": instanc.Kind,
+	//		"apiVersion":instanc.APIVersion,
+	//		"metadata":map[string]interface{}{
+	//			"name":instanc.Name,
+	//			"resourceVersion": instanc.ResourceVersion,
+	//			"labels":instanc.Labels,
+	//			"managedFields":instanc.ManagedFields,
+	//			"annotations":instanc.Annotations,
+	//			"generateName": instanc.Name,
+	//		},
+	//		"spec":instanc.Spec,
+	//		"status":instanc.Status,
+	//	},
+	//},metav1.UpdateOptions{})
 	//if err != nil {
-	//	fmt.Println("333:", err)
+	//	fmt.Println("update status err:",err)
 	//}
-	//
-	//if len(obj.Items) == 0{
-	//	fmt.Println("this item length is 0")
-	//}
-	//
-	//for i := range obj.Items {
-	//	item := obj.Items[i]
-	//	fmt.Println(item.GetName())
-	//	fmt.Println(item.GetNamespace())
-	//
-	//}
+
 
 }
