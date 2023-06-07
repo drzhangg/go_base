@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 func main() {
@@ -22,4 +23,7 @@ func main() {
 	} else {
 		fmt.Println("Failed to extract error message")
 	}
+
+	s2 := strings.Join([]string{"a","b"},"/job/")
+	fmt.Println("/job/"+s2)
 }
