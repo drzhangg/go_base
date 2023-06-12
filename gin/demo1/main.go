@@ -63,6 +63,7 @@ func hello(c *gin.Context) {
 	if name == "" {
 		name = "jerry"
 	}
+	fmt.Println("latest10 name is :",name)
 
 	c.JSON(http.StatusOK, map[string]string{"name": name})
 }
@@ -79,14 +80,16 @@ func command(c *gin.Context) {
 
 	finfos, err := ioutil.ReadDir("/etc/config.conf")
 	if err != nil {
-		fmt.Println("err:", err)
+		fmt.Println("ReadDir is err:", err)
+		return
 	}
 
 	for _, v := range finfos {
 		if !v.IsDir() {
 			data, err := ioutil.ReadFile(v.Name())
 			if err != nil {
-				fmt.Println("err:", err)
+				fmt.Println("ReadFile si err:", err)
+				return
 			}
 			fmt.Println("data::", string(data))
 		} else {

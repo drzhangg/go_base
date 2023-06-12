@@ -16,18 +16,18 @@ spec:
         app: gin-test
     spec:
       volumes:
-        - name: config.conf-volume
+        - name: conf-volume
           configMap:
             name: gin-test
       containers:
-        - image: drzhangg/gin_demo1:v10
+        - image: docker.io/drzhangg/gin-demo:v0.1
           name: gin-demo
           ports:
             - containerPort: 8181
               name: http
           imagePullPolicy: Always
           volumeMounts:
-            - name: config.conf-volume
+            - name: conf-volume
               mountPath: /etc/config.conf
 ---
 apiVersion: v1
@@ -54,4 +54,5 @@ metadata:
 data:
   SPECIAL_LEVEL: very
   SPECIAL_TYPE: charm
+
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -29,7 +30,28 @@ func (u UserResource) Register(container *restful.Container) {
 	ws.Route(ws.PUT("/{user-id}").To(u.createUser))
 	ws.Route(ws.DELETE("/{user-id}").To(u.removeUser))
 
+	ws.Route(ws.HEAD("/{user-id}").To(u.checkUserExistence))
+
 	container.Add(ws)
+}
+
+
+func (u UserResource) checkUserExistence(request *restful.Request, response *restful.Response) {
+	id := request.PathParameter("user-id")
+
+	fmt.Println("user id :",id)
+
+	// 假设根据用户 ID 判断用户是否存在的逻辑
+	user, exists := u.users[id]
+	// 设置响应头部信息
+	if exists {
+		response.AddHeader("User-Exists", "true")
+
+		fmt.Println(true,user.Name)
+	} else {
+		response.AddHeader("User-Exists", "false")
+		fmt.Println(false)
+	}
 }
 
 // GET http://localhost:8090/users/1
