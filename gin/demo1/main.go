@@ -63,7 +63,7 @@ func hello(c *gin.Context) {
 	if name == "" {
 		name = "jerry"
 	}
-	fmt.Println("latest10 name is :",name)
+	fmt.Println("latest108 name is :",name)
 
 	c.JSON(http.StatusOK, map[string]string{"name": name})
 }
