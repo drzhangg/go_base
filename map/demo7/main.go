@@ -17,6 +17,6 @@ func main() {
 	if p.Annotations == nil {
 		p.Annotations = map[string]string{}
 	}
-	p.Annotations["test"] = "finish"
+	p.Annotations["test"] = "finish4"
 	fmt.Println(p.Annotations["test"])
 }
