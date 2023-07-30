@@ -7,6 +7,7 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/transport"
 	"os"
 	"path/filepath"
 )
@@ -20,6 +21,37 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	conf := &transport.Config{
+		UserAgent:          config.UserAgent,
+		Transport:          config.Transport,
+		WrapTransport:      config.WrapTransport,
+		DisableCompression: config.DisableCompression,
+		TLS: transport.TLSConfig{
+			Insecure:   config.Insecure,
+			ServerName: config.ServerName,
+			CAFile:     config.CAFile,
+			CAData:     config.CAData,
+			CertFile:   config.CertFile,
+			CertData:   config.CertData,
+			KeyFile:    config.KeyFile,
+			KeyData:    config.KeyData,
+			NextProtos: config.NextProtos,
+		},
+		Username:        config.Username,
+		Password:        config.Password,
+		BearerToken:     config.BearerToken,
+		BearerTokenFile: config.BearerTokenFile,
+		Impersonate: transport.ImpersonationConfig{
+			UserName: config.Impersonate.UserName,
+			Groups:   config.Impersonate.Groups,
+			Extra:    config.Impersonate.Extra,
+		},
+		Dial:  config.Dial,
+		Proxy: config.Proxy,
+	}
+
+	fmt.Printf("%#v\n",conf)
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
