@@ -1,15 +1,21 @@
 package main
 
-import (
-	"encoding/base64"
-	"fmt"
-)
+import "fmt"
+
+type ListNode struct {
+	Val  string
+	Next *ListNode
+}
+
+func (l *ListNode) Add(add *ListNode) *ListNode {
+	// add header
+	add.Next = l
+	return add
+}
 
 func main() {
-	f := fmt.Sprintf(`{"Authorization": "Internal %s"}`,"jerry")
-	fmt.Println(f)
+	var m map[string]struct{}
 
-
-	d,_ := base64.StdEncoding.DecodeString("emhhbmcK")
-	fmt.Println(string(d))
+	val := m["name"]
+	fmt.Println(val)
 }

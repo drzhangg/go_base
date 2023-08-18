@@ -43,6 +43,7 @@ func monitorMetrics() gin.HandlerFunc {
 		// 调用处理程序
 		c.Next()
 
+
 		// 获得响应状态码
 		status := strconv.Itoa(c.Writer.Status())
 
