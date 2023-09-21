@@ -14,7 +14,7 @@ import (
 
 func main() {
 	h := os.Getenv("HOME")
-	f := filepath.Join(h, ".kube", "config.conf")
+	f := filepath.Join(h, ".kube", "config")
 	kubeconfig := flag.String("kubeconfig", f, "(optional) absolute path to the kubeconfig file")
 
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
@@ -27,7 +27,7 @@ func main() {
 		fmt.Println("asaqweqwe:", err)
 	}
 
-	req := clientset.CoreV1().RESTClient().Post().Resource("pods").Name("nginx-test-6c88c44876-vf9vs").Namespace("default").SubResource("exec")
+	req := clientset.CoreV1().RESTClient().Post().Resource("pods").Name("nginx-test-6d887654c-hw5jv").Namespace("default").SubResource("exec")
 	req.VersionedParams(&v1.PodExecOptions{
 		Container: "nginx",
 		Command:   []string{"bash"},
