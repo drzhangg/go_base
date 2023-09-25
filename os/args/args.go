@@ -17,4 +17,7 @@ func main() {
 
 	base := filepath.Base(args[0])
 	fmt.Println(base)
+
+	name,_ := os.Hostname()
+	fmt.Println(name)
 }
