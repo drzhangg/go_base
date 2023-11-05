@@ -13,6 +13,12 @@ func main() {
 		c.JSON(200, map[string]string{"name": "jerry"})
 	})
 
+	r.POST("/create", func(c *gin.Context) {
+
+	}, func(c *gin.Context) {
+		
+	})
+
 	r.Run(":9191")
 }
 

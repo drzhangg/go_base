@@ -3,41 +3,26 @@ package main
 import (
 	"context"
 	"fmt"
-	"runtime"
 	"time"
 )
 
-func job() error{
-	ctx,_ := context.WithTimeout(context.Background(),time.Second)
-
-	done := make(chan struct{})
-
-	go func() {
-		time.Sleep(time.Millisecond * 500)
-		done <- struct{}{}
-	}()
-
-	select {
-
-	case <-done:
-		return nil
-
-	case <-ctx.Done():
-		return fmt.Errorf("超时了")
+func cancelByContext(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done(): // Done()是监听cancel()、超时操作
+			fmt.Println("cancel goroutine by context!")
+			return
+		default:
+			fmt.Println("Im alive")
+			time.Sleep(1 * time.Second)
+		}
 	}
 }
 
 func main() {
-	//fmt.Println(job())
-
-	for i := 0; i < 20; i++ {
-		go func() {
-			job()
-		}()
-	}
-
-	for{
-		time.Sleep(time.Second * 2)
-		fmt.Println(runtime.NumGoroutine())
-	}
+	ctx, cancel1 := context.WithCancel(context.Background())
+	go cancelByContext(ctx)
+	time.Sleep(10 * time.Second)
+	cancel1()
+	time.Sleep(5 * time.Second)
 }
