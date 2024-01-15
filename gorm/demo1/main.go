@@ -20,18 +20,20 @@ func (*Server) TableName() string {
 
 func main() {
 
-	dsn := "root:root@tcp(150.158.87.137:3306)/daota?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:root@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(" gorm.Open err:",err)
+		return
 	}
 
 	name := []string{}
 
 	//m := make(map[string]interface{})
-	err = db.Table("heros").Select("name").Scan(&name).Error
+	err = db.Table("students").Select("name").Scan(&name).Error
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("select err:",err)
+		return
 	}
 
 	fmt.Println(name)
