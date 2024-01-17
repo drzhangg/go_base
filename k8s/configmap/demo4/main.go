@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -26,12 +27,17 @@ func main() {
 		fmt.Println("asaqweqwe:", err)
 	}
 
-	cm,err := clientset.CoreV1().ConfigMaps("test").Get(context.TODO(),"test-cm",v1.GetOptions{})
+	cm,err := clientset.CoreV1().ConfigMaps("kube-system").Get(context.TODO(),"coredns",v1.GetOptions{})
 	if err != nil {
 		fmt.Println("err:", err)
 	}
 
-	fmt.Println(cm.Data["address"])
+	data,err := json.Marshal(cm)
+	if err != nil {
+		fmt.Println("err23:",err)
+	}
+
+	fmt.Printf("%s",data)
 
 
 }
