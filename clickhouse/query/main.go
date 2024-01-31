@@ -1,39 +1,45 @@
 package main
 
 import (
-	"context"
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"database/sql"
+	"fmt"
+	_ "github.com/ClickHouse/clickhouse-go"
 	"log"
-	"time"
 )
 
 func main() {
-	conn, err := clickhouse.Open(&clickhouse.Options{
-		Addr: []string{"xxx:8123"},
-		Auth: clickhouse.Auth{
-			Database: "default",
-			Username: "default",
-			Password: "",
-		},
-		Settings: clickhouse.Settings{
-			"max_execution_time": 60,
-		},
-		DialTimeout:      time.Second * 30,
-		MaxOpenConns:     5,
-		MaxIdleConns:     5,
-		ConnMaxLifetime:  time.Duration(10) * time.Minute,
-		ConnOpenStrategy: clickhouse.ConnOpenInOrder,
-		BlockBufferSize: 10,
-		MaxCompressionBuffer: 10240,
-		Protocol: clickhouse.HTTP,
-	})
+	dsn := "tcp://xxx:8123?username=default&password=default&database=test"
+	// 打开数据库连接
+	conn, err := sql.Open("clickhouse", dsn)
 	if err != nil {
-		log.Println("conn err:",err)
+		fmt.Println("连接失败:", err)
+		log.Fatal("Open err ",err)
 	}
-	err = conn.Ping(context.Background())
+	defer conn.Close()
 
+	err = conn.Ping()
 	if err != nil {
-		log.Println("Ping err:",err)
+		fmt.Println("ping失败:", err)
+		log.Fatal("Ping err ",err)
 	}
+
+
+	sqlstr := "select name from test1 where name = ? "
+
+	rows,err := conn.Query(sqlstr,"jerry")
+	if err != nil {
+		log.Fatal("QueryRow err ",err)
+	}
+
+	if !rows.Next(){
+		fmt.Println("no data")
+	}
+
+	var value string
+	if err := rows.Scan(&value); err != nil {
+		log.Println("scan err:",err)
+		//return false, err.Error()
+	}
+	fmt.Println("val::",value)
 
 }

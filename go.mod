@@ -3,10 +3,10 @@ module go_base
 go 1.17
 
 require (
-	github.com/spf13/cobra v1.3.0
-	k8s.io/api v0.22.4
-	k8s.io/apimachinery v0.22.4
-	k8s.io/client-go v0.22.4
+	github.com/spf13/cobra v1.6.1
+	k8s.io/api v0.26.2
+	k8s.io/apimachinery v0.26.2
+	k8s.io/client-go v0.26.2
 	k8s.io/kubectl v0.22.4
 )
 
@@ -39,9 +39,9 @@ require (
 	github.com/evanphx/json-patch v4.12.0+incompatible
 	github.com/go-redis/redis/v9 v9.0.0-beta.2
 	github.com/goccy/go-json v0.10.1
-	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4 // indirect
-	github.com/imdario/mergo v0.3.12 // indirect
-	github.com/prometheus/client_golang v1.12.2
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
+	github.com/imdario/mergo v0.3.13 // indirect
+	github.com/prometheus/client_golang v1.14.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/spf13/viper v1.10.1
@@ -54,7 +54,7 @@ require (
 	gopkg.in/DataDog/dd-trace-go.v1 v1.40.1
 	gopkg.in/ini.v1 v1.66.6 // indirect
 	gorm.io/driver/mysql v1.4.0
-	gorm.io/gorm v1.23.10
+	gorm.io/gorm v1.24.6
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
 
@@ -80,7 +80,7 @@ require (
 	github.com/eapache/go-resiliency v1.3.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20180814174437-776d5712da21 // indirect
 	github.com/eapache/queue v1.1.0 // indirect
-	github.com/fsnotify/fsnotify v1.5.4 // indirect
+	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-faster/city v1.0.1 // indirect
 	github.com/go-faster/errors v0.6.1 // indirect
@@ -100,8 +100,9 @@ require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
+	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jcmturner/aescts/v2 v2.0.0 // indirect
 	github.com/jcmturner/dnsutils/v2 v2.0.0 // indirect
 	github.com/jcmturner/gofork v1.7.6 // indirect
@@ -116,7 +117,7 @@ require (
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/go-clickhouse/v2 v2.1.0 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
-	github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369 // indirect
+	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/moby/spdystream v0.2.0 // indirect
@@ -138,7 +139,7 @@ require (
 	github.com/richardlehane/mscfb v1.0.4 // indirect
 	github.com/richardlehane/msoleps v1.0.3 // indirect
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
-	github.com/russross/blackfriday v1.5.2 // indirect
+	github.com/russross/blackfriday v1.6.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
@@ -159,22 +160,23 @@ require (
 	go4.org/intern v0.0.0-20230205224052-192e9f60865c // indirect
 	go4.org/unsafe/assume-no-moving-gc v0.0.0-20230221090011-e4bae7ad2296 // indirect
 	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect
+	golang.org/x/oauth2 v0.6.0 // indirect
 	golang.org/x/term v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.16.1 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa // indirect
+	google.golang.org/genproto v0.0.0-20230525234025-438c736192d0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gorm.io/driver/clickhouse v0.6.0 // indirect
 	inet.af/netaddr v0.0.0-20220811202034-502d2d690317 // indirect
-	k8s.io/klog/v2 v2.80.1 // indirect
+	k8s.io/klog/v2 v2.90.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20221012153701-172d655c2280 // indirect
-	k8s.io/utils v0.0.0-20221107191617-1a15be271d1d // indirect
+	k8s.io/utils v0.0.0-20230220204549-a5ecb0141aa5 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 
 )

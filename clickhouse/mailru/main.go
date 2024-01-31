@@ -2,146 +2,77 @@ package main
 
 import (
 	"context"
-	"database/sql"
-
-	"github.com/mailru/go-clickhouse/v2"
+	"fmt"
 	"log"
-	"time"
+
+	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 )
 
 func main() {
-	connect, err := sql.Open("chhttp", "http://xxx:8123/default")
+	conn, err := connect()
 	if err != nil {
-		log.Fatal(err)
-	}
-	if err := connect.Ping(); err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = connect.Exec(`
-		CREATE TABLE IF NOT EXISTS example (
-			country_code FixedString(2),
-			os_id        UInt8,
-			browser_id   UInt8,
-			categories   Array(Int16),
-			action_day   Date,
-			action_time  DateTime
-		) engine=Memory
-	`)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	tx, err := connect.Begin()
-	if err != nil {
-		log.Fatal(err)
-	}
-	stmt, err := tx.Prepare(`
-		INSERT INTO example (
-			country_code,
-			os_id,
-			browser_id,
-			categories,
-			action_day,
-			action_time
-		) VALUES (
-			?, ?, ?, ?, ?, ?
-		)`)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for i := 0; i < 100; i++ {
-		if _, err := stmt.Exec(
-			"RU",
-			10+i,
-			100+i,
-			clickhouse.Array([]int16{1, 2, 3}),
-			clickhouse.Date(time.Now()),
-			time.Now(),
-		); err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	if err := tx.Commit(); err != nil {
-		log.Fatal(err)
-	}
-
-	rows, err := connect.Query(`
-		SELECT
-			country_code,
-			os_id,
-			browser_id,
-			categories,
-			action_day,
-			action_time
-		FROM
-			example`)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for rows.Next() {
-		var (
-			country               string
-			os, browser           uint8
-			categories            []int16
-			actionDay, actionTime time.Time
-		)
-		if err := rows.Scan(
-			&country,
-			&os,
-			&browser,
-			&categories,
-			&actionDay,
-			&actionTime,
-		); err != nil {
-			log.Fatal(err)
-		}
-		log.Printf("country: %s, os: %d, browser: %d, categories: %v, action_day: %s, action_time: %s",
-			country, os, browser, categories, actionDay, actionTime,
-		)
+		panic((err))
 	}
 
 	ctx := context.Background()
-	rows, err = connect.QueryContext(context.WithValue(ctx, clickhouse.QueryID, "dummy-query-id"), `
-		SELECT
-			country_code,
-			os_id,
-			browser_id,
-			categories,
-			action_day,
-			action_time
-		FROM
-			example`)
-
+	sqlstr := "select name from test1 where name = ? "
+	rows, err := conn.Query(ctx, sqlstr,"jerry")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for rows.Next() {
 		var (
-			country               string
-			os, browser           uint8
-			categories            []int16
-			actionDay, actionTime time.Time
+			name, uuid string
 		)
 		if err := rows.Scan(
-			&country,
-			&os,
-			&browser,
-			&categories,
-			&actionDay,
-			&actionTime,
+			&name,
+			&uuid,
 		); err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("country: %s, os: %d, browser: %d, categories: %v, action_day: %s, action_time: %s",
-			country, os, browser, categories, actionDay, actionTime,
-		)
+		log.Printf("name: %s, uuid: %s",
+			name, uuid)
 	}
+
+}
+
+func connect() (driver.Conn, error) {
+	var (
+		ctx       = context.Background()
+		conn, err = clickhouse.Open(&clickhouse.Options{
+			Addr: []string{"xxx:8123"},
+			Auth: clickhouse.Auth{
+				Database: "test",
+				Username: "default",
+				Password: "default",
+			},
+			ClientInfo: clickhouse.ClientInfo{
+				Products: []struct {
+					Name    string
+					Version string
+				}{
+					{Name: "an-example-go-client", Version: "0.1"},
+				},
+			},
+
+			Debugf: func(format string, v ...interface{}) {
+				fmt.Printf(format, v)
+			},
+
+		})
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if err := conn.Ping(ctx); err != nil {
+		if exception, ok := err.(*clickhouse.Exception); ok {
+			fmt.Printf("Exception [%d] %s \n%s\n", exception.Code, exception.Message, exception.StackTrace)
+		}
+		return nil, err
+	}
+	return conn, nil
 }
