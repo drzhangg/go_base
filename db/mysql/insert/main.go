@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"go_base/mysql/config"
-	"go_base/mysql/pkg"
+	"go_base/db/mysql/config"
+	"go_base/db/mysql/pkg"
 	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 	"math/rand"
