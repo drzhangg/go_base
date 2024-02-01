@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	dsn := "tcp://xxx:8123?username=default&password=default&database=test"
+	dsn := "clickhouse://xxx:8123?username=default&password=default&database=test"
 	// 打开数据库连接
 	conn, err := sql.Open("clickhouse", dsn)
 	if err != nil {
