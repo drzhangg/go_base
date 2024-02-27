@@ -8,20 +8,37 @@ import (
 
 func main() {
 
-	url := "http://127.0.0.1:8181/hello/shanghai"
-	req, err := http.Get(url)
+	//url := "http://127.0.0.1:8181/hello/shanghai"
+	//req, err := http.Get(url)
+	//if err != nil {
+	//	fmt.Println("err:", err)
+	//	return
+	//}
+	//
+	//datas, err := ioutil.ReadAll(req.Body)
+	//if err != nil {
+	//	fmt.Println("err:", err)
+	//}
+	//defer req.Body.Close()
+	//
+	//fmt.Println("strings:", string(datas))
+
+
+	url := "http://127.0.0.1:8181/delete/zjh"
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Println("err:", err)
-		return
+		fmt.Println("newRequest err:", err)
 	}
 
-	datas, err := ioutil.ReadAll(req.Body)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("err:", err)
+		// handle error
 	}
-	defer req.Body.Close()
-
-	fmt.Println("strings:", string(datas))
+	fmt.Println(resp.StatusCode)
+	fmt.Println(string(body))
 }
 
 
