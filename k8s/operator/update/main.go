@@ -38,7 +38,7 @@ func main() {
 
 	redisCr,err := client.Resource(gvr).Get(context.Background(),"redis-sample",v1.GetOptions{})
 	if err != nil {
-		fmt.Println("get redis cr err:", err)
+		fmt.Println("get redis crd err:", err)
 		return
 	}
 
@@ -54,7 +54,7 @@ func main() {
 
 	_,err  = client.Resource(gvr).Update(context.Background(),redisCr,v1.UpdateOptions{})
 	if err != nil {
-		fmt.Println("update redis cr err:", err)
+		fmt.Println("update redis crd err:", err)
 		return
 	}
 

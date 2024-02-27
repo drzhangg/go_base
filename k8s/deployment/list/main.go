@@ -47,7 +47,7 @@ func main() {
 			Groups:   config.Impersonate.Groups,
 			Extra:    config.Impersonate.Extra,
 		},
-		Dial:  config.Dial,
+		//Dial:  config.Dial,
 		Proxy: config.Proxy,
 	}
 

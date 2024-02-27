@@ -18,10 +18,9 @@ func main() {
 	f := filepath.Join(h, ".kube", "config")
 	kubeconfig := flag.String("kubeconfig", f, "(optional) absolute path to the kubeconfig file")
 
-	masterUrl := ""
-	config, err := clientcmd.BuildConfigFromFlags(masterUrl, *kubeconfig)
+	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
 	if err != nil {
-
+		fmt.Println("BuildConfigFromFlags err:",err)
 	}
 
 	client, err := dynamic.NewForConfig(config)
@@ -31,16 +30,13 @@ func main() {
 	}
 
 	gvr := schema.GroupVersionResource{
-		Group:    "app.drzhangg.io",
-		Version:  "v1beta1",
-		Resource: "appservices",
+		Group:    "redis.sensoro.sre",
+		Version:  "v1beta23",
+		Resource: "redis",
 	}
 
-	ip := "9a91fb901"
-
-
-	list,err := client.Resource(gvr).List(context.Background(),v1.ListOptions{
-		LabelSelector: fmt.Sprintf("ip=%s",ip),
+	list,err := client.Resource(gvr).Namespace("").List(context.Background(),v1.ListOptions{
+		//LabelSelector: fmt.Sprintf("ip=%s",ip),
 	})
 	if err !=nil{
 		fmt.Println("list err:",err)

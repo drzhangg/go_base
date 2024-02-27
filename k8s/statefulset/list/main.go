@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+
 	h := os.Getenv("HOME")
 
 	f := filepath.Join(h, ".kube", "config")
@@ -23,26 +24,21 @@ func main() {
 		panic(err)
 	}
 
-
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		fmt.Println("asaqweqwe:", err)
+		fmt.Println("kubernetes.NewForConfig err:", err)
 	}
 
-	//clientset.CoreV1().Pods("default").List()
 
-	pods, err := clientset.CoreV1().Pods("default").List(context.TODO(), v1.ListOptions{})
+	list ,err := clientset.AppsV1().StatefulSets("").List(context.Background(),v1.ListOptions{
+		LabelSelector: "app=taosd",
+	})
 	if err != nil {
-		panic(err.Error())
+		fmt.Println("get sts list err:",err)
 	}
 
-
-	for _, v := range pods.Items {
-		fmt.Println(v.Name)
-
-		fmt.Println(v.CreationTimestamp)
-
-		//v.Name
+	for _, item := range list.Items{
+		fmt.Println("name:",item.Name)
 	}
-	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+
 }

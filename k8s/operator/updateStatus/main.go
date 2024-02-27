@@ -42,7 +42,7 @@ func main() {
 
 	list, err := client.Resource(gvr).List(context.Background(), v1.ListOptions{})
 	if err != nil {
-		fmt.Println("get cr list err:", err)
+		fmt.Println("get crd list err:", err)
 		return
 	}
 
@@ -53,8 +53,8 @@ func main() {
 		crnslist = append(crnslist, v.GetNamespace())
 	}
 
-	fmt.Println("cr list is:",crlist)
-	fmt.Println("cr namespace list is:",crnslist)
+	fmt.Println("crd list is:",crlist)
+	fmt.Println("crd namespace list is:",crnslist)
 
 	namespace := "default"
 
@@ -62,7 +62,7 @@ func main() {
 
 	apps, err := client.Resource(gvr).Namespace(namespace).Get(context.Background(), crName, v1.GetOptions{})
 	if err != nil {
-		fmt.Println("get cr err:", err)
+		fmt.Println("get crd err:", err)
 		return
 	}
 
