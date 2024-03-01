@@ -17,42 +17,36 @@ import (
 
 func main() {
 
+	//{"status":[],"verbose":1,"clusters":["cl-sz2chfvp"],"action":"DescribeClusters","owner":"usr-zWBOsvlF","zone":"xn1a"}
 	hr := HttpRequest{
-		Action:            "DescribeClusterNodes",
-		Zone:              "xining",
+		Action:            "DescribeClusters",
+		Zone:              "xn1a",
 		Time_stamp:        fmt.Sprintf(time.Now().Format("2006-01-02T15:04:05Z")),
 		Access_key_id:     "GBPFITMISNISAOHQBYGC",
 		Version:           1,
 		Signature_method:  "HmacSHA256",
 		Signature_version: 1,
-		Cluster:           "cl-sz2chfvp",
+		Clusters:           []string{"cl-sz2chfvp"},
 		Owner:             "usr-zWBOsvlF",
-	}
-	d1,err :=structToSortedJSON(hr)
-	if err != nil {
-		fmt.Println("err1:",err)
+		Verbose: 1,
 	}
 
-	fmt.Println("d1:",string(d1))
+	pm1 := fmt.Sprintf("access_key_id=%s&action=DescribeClusters",hr.Access_key_id)
+	pm2 := fmt.Sprint("&clusters.n%5B%5D=",hr.Clusters[0])
+	//pm2 := fmt.Sprintf("&apps.n[]=%s",kafkaAppId)
+	pm3 := fmt.Sprintf("&owner=%s&signature_method=%s&signature_version=%d&time_stamp=%s&verbose=%d&version=%d&zone=%s",
+		hr.Owner,hr.Signature_method,hr.Signature_version, url.QueryEscape(hr.Time_stamp),hr.Verbose,hr.Version,hr.Zone)
 
-	hp := bytesToHttpParams(d1)
-	fmt.Println("hp::",hp)
 
-	stringToSign := fmt.Sprintf("GET\n/iaas/\n%s",hp)
+	pm := pm1+pm2+pm3
 
-	//stringToSign := "GET\n/iaas/\naccess_key_id=GBPFITMISNISAOHQBYGC&action=DescribeClusters&apps.n%5B%5D=app-n9ro0xcp&owner=usr-zWBOsvlF&signature_method=HmacSHA256&signature_version=1&status.n=active&time_stamp=2024-02-27T11%3A09%3A10Z&version=1&zone=xining"
-	//stringToSign := "GET\n/iaas/\naccess_key_id=GBPFITMISNISAOHQBYGC&action=DescribeClusters&signature_method=HmacSHA256&signature_version=1&time_stamp=2024-02-27T11%3A09%3A10Z&version=1&zone=xining"
 	secretAccessKey := "QxarSIh5sdB25RkjrvdHc0mcDS01Klrm3exJKD0I"
+	signature := getSignatureByParams(pm,secretAccessKey)
 
-	h := hmac.New(sha256.New, []byte(secretAccessKey))
-	h.Write([]byte(stringToSign))
-	sign := h.Sum(nil)
-	signature := base64.StdEncoding.EncodeToString(sign)
-	encodedSignature := url.QueryEscape(signature)
+	//fmt.Println("signature:",signature)
 
-	fmt.Println(encodedSignature)
-
-	newUrl := fmt.Sprint("https://xxx/iaas/?", hp, "&signature=", signature)
+	newUrl := fmt.Sprint("https://xxx/iaas/?", pm, "&signature=", signature)
+	fmt.Println("newUrl::",newUrl)
 	data, _, err := Get(newUrl)
 	if err != nil {
 		fmt.Printf("get qingcloud kafka resource failed, err: %v", err)
@@ -61,22 +55,23 @@ func main() {
 	//fmt.Println("data::",string(data))
 
 	dataMap := make(map[string]interface{})
-
-	qckns := []QingCloudKafkaNodeStruct{}
+	qckns := QingCloudKafkaStruct{}
 
 	json.Unmarshal(data,&dataMap)
 
-	fmt.Println("qc::",dataMap["action"])
-	fmt.Println("qc::",dataMap["total_count"])
+	dd := dataMap["cluster_set"].([]interface{})[0].(map[string]interface{})
 
-	nodeData,err := json.Marshal(dataMap["node_set"])
+	nodeData,err := json.Marshal(dd)
 	if err != nil {
 		fmt.Println("marsha err:",err)
 	}
 
 	json.Unmarshal(nodeData,&qckns)
 
-	fmt.Printf("qcccc:%#v\n",qckns)
+	d111,_ :=json.Marshal(qckns)
+	fmt.Println("11:",string(d111))
+
+	//fmt.Printf("qcccc:%#v\n",qckns)
 }
 
 func structToSortedJSON(s interface{}) ([]byte, error) {
@@ -105,6 +100,24 @@ func structToSortedJSON(s interface{}) ([]byte, error) {
 	return json.Marshal(sortedData)
 }
 
+type QingCloudKafkaStruct struct {
+	AppId          string `json:"app_id"`
+	CreateTime     string `json:"create_time"`
+	Owner          string `json:"owner"`
+	Name           string `json:"name"`
+	NodeCount      int32  `json:"node_count"`
+	ZoneId         string `json:"zone_id"`
+	Status         string `json:"status"`
+	Description    string `json:"description"`
+	AppVersionInfo struct {
+		Name        string `json:"name"`
+		VersionType string `json:"version_type"`
+		VersionId   string `json:"version_id"`
+	} `json:"app_version_info"`
+	ClusterId string                     `json:"cluster_id"`
+	Nodes     []QingCloudKafkaNodeStruct `json:"nodes"`
+}
+
 type QingCloudKafkaNodeStruct struct {
 	ClusterId string `json:"cluster_id"`
 	NodeId    string `json:"node_id"`
@@ -123,8 +136,9 @@ type HttpRequest struct {
 	Signature_method  string
 	Signature_version int
 	//Signature         string
-	Cluster string
+	Clusters []string
 	Owner   string
+	Verbose int
 }
 
 func bytesToHttpParams(b []byte) string {
@@ -164,4 +178,21 @@ func Get(url string) ([]byte, int, error) {
 	}
 
 	return body, resp.StatusCode, nil
+}
+
+func getSignatureByParams(params string, secretAccessKey string) string {
+
+	//stringToSign := "GET\n/iaas/\naccess_key_id=GBPFITMISNISAOHQBYGC&action=DescribeClusters&apps.n%5B%5D=app-n9ro0xcp&owner=usr-zWBOsvlF&signature_method=HmacSHA256&signature_version=1&status.n=active&time_stamp=2024-02-27T11%3A09%3A10Z&version=1&zone=xining"
+	//secretAccessKey := "QxarSIh5sdB25RkjrvdHc0mcDS01Klrm3exJKD0I"
+	stringToSign := fmt.Sprintf("GET\n/iaas/\n%s", params)
+
+	hn := hmac.New(sha256.New, []byte(secretAccessKey))
+	hn.Write([]byte(stringToSign))
+	sign := hn.Sum(nil)
+
+	signature := base64.StdEncoding.EncodeToString(sign)
+	encodedSignature := url.QueryEscape(signature)
+
+	fmt.Println("signature:", encodedSignature)
+	return encodedSignature
 }
