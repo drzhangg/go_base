@@ -105,7 +105,7 @@ func onAdd1(obj interface{}) {
 func onUpdate1(old, new interface{}) {
 	oldDeploy := old.(*v12.Pod)
 	newDeploy := new.(*v12.Pod)
-	fmt.Println("update Pod:", oldDeploy.Name, newDeploy.Name)
+	fmt.Println("updatestatus Pod:", oldDeploy.Name, newDeploy.Name)
 }
 
 func onDelete1(obj interface{}) {
@@ -121,7 +121,7 @@ func onAdd(obj interface{}) {
 func onUpdate(old, new interface{}) {
 	oldDeploy := old.(*v1.Deployment)
 	newDeploy := new.(*v1.Deployment)
-	fmt.Println("update deployment:", oldDeploy.Name, newDeploy.Name)
+	fmt.Println("updatestatus deployment:", oldDeploy.Name, newDeploy.Name)
 }
 
 func onDelete(obj interface{}) {

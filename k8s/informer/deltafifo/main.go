@@ -59,7 +59,7 @@ func main() {
 			case cache.Added:
 				fmt.Println("add :",delta.Object.(pod).name)
 			case cache.Updated:
-				fmt.Println("update: ",delta.Object.(pod).name)
+				fmt.Println("updatestatus: ",delta.Object.(pod).name)
 			case cache.Deleted:
 				fmt.Println("delete: ",delta.Object.(pod).name)
 			}

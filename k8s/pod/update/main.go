@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
-	v12 "k8s.io/api/core/v1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
+
 	"os"
 	"path/filepath"
 )
@@ -15,7 +16,7 @@ import (
 func main() {
 	h := os.Getenv("HOME")
 
-	f := filepath.Join(h, ".kube", "config.conf")
+	f := filepath.Join(h, ".kube", "config")
 	kubeconfig := flag.String("kubeconfig", f, "(optional) absolute path to the kubeconfig file")
 
 	masterUrl := ""
@@ -29,36 +30,49 @@ func main() {
 		fmt.Println("asaqweqwe:", err)
 	}
 
-	pod, err := client.CoreV1().Pods("default").Get(context.Background(), "endpoint-pod", v1.GetOptions{})
+	rc := client.RESTClient()
+
+	deploy, err := client.AppsV1().Deployments("default").Get(context.Background(), "test1", metav1.GetOptions{})
 	if err != nil {
-		fmt.Println("get pod err:", err)
+		fmt.Println("get deployment err:", err)
 	}
 
-	//dataMap := map[string]interface{}{
-	//	"status": map[string]interface{}{
-	//		"message": "test message",
-	//	},
-	//}
+	*deploy.Spec.Replicas = 4
 
+	//deploy.Kind = "Deployment"
+	//deploy.APIVersion = "apps/v1"
 
-	//data, err := json.Marshal(&dataMap)
-	//if err != nil {
-	//	fmt.Println("marshal err:", err)
-	//}
+	deployPath := "apis/apps/v1/namespaces/default/deployments/test1"
+	fmt.Println(deployPath)
+	//data,err := deploy.Marshal()
 
-	status := pod.Status
-	status.Message = "test message"
-
-	_, err = client.CoreV1().Pods(pod.Namespace).
-		UpdateStatus(context.Background(), &v12.Pod{
-			TypeMeta:   pod.TypeMeta,
-			ObjectMeta: pod.ObjectMeta,
-			Spec:       pod.Spec,
-			Status:     status,
-		}, v1.UpdateOptions{})
-	//Patch(context.Background(), pod.Name, types.MergePatchType, data, v1.PatchOptions{})
-	if err != nil {
-		fmt.Println("patch err:", err)
+	data,err := json.Marshal(deploy)
+	if err!= nil {
+		fmt.Println("marshal err:",err)
 	}
+	fmt.Println("kind:",string(data))
+
+	result,err := rc.Put().AbsPath(deployPath).Body(data).DoRaw(context.Background())
+	if err != nil {
+		fmt.Println("pu err::",err)
+	}
+
+	//re,err := rc.Put().
+	//	AbsPath(deployPath).
+	//	Namespace("default").
+	//	Resource("deployments").
+	//	Name("test1").
+	//	VersionedParams(&metav1.UpdateOptions{}, scheme.ParameterCodec).
+	//	Body(data).
+	//	DoRaw(context.Background())
+	//	//Into(result)
+	//
+	//	if err != nil {
+	//		fmt.Println(err)
+	//	}
+
+
+	fmt.Println("result:",string(result))
+
 
 }

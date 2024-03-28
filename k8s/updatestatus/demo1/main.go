@@ -33,7 +33,7 @@ type FrigateSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Frigate. Edit frigate_types.go to remove/update
+	// Foo is an example field of Frigate. Edit frigate_types.go to remove/updatestatus
 	Foo         string `json:"foo,omitempty"`
 	Name        string `json:"name,omitempty"`
 	Addr        string `json:"addr,omitempty"`
@@ -103,7 +103,7 @@ func main() {
 		},
 	},metav1.UpdateOptions{})
 	if err != nil {
-		fmt.Println("update status err:",err)
+		fmt.Println("updatestatus status err:",err)
 	}
 
 	//_,err = dynamicClient.Resource(devopsProject).Namespace("default").UpdateStatus(context.Background(),&unstructured.Unstructured{
@@ -123,7 +123,7 @@ func main() {
 	//	},
 	//},metav1.UpdateOptions{})
 	//if err != nil {
-	//	fmt.Println("update status err:",err)
+	//	fmt.Println("updatestatus status err:",err)
 	//}
 
 

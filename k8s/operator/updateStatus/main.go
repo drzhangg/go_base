@@ -109,7 +109,7 @@ func main() {
 		},
 	},v1.UpdateOptions{})
 	if err != nil {
-		fmt.Println("update status err:",err)
+		fmt.Println("updatestatus status err:",err)
 	}
 
 }
@@ -125,7 +125,7 @@ type AppServiceSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of AppService. Edit appservice_types.go to remove/update
+	// Foo is an example field of AppService. Edit appservice_types.go to remove/updatestatus
 	Size     *int32                  `json:"size"`
 	Image    string                  `json:"image"`
 	Resource v13.ResourceRequirements `json:"resource,omitempty"`

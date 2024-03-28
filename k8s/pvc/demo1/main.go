@@ -32,10 +32,12 @@ func main() {
 	}
 
 	for _,v := range pvcList.Items{
-		if v.Spec.StorageClassName != nil {
-			fmt.Println(*v.Spec.StorageClassName)
-		}else {
-			fmt.Println(v.Name)
-		}
+		//if v.Spec.StorageClassName != nil {
+		//	fmt.Println(*v.Spec.StorageClassName)
+		//}else {
+		//	fmt.Println(v.Name)
+		//}
+
+		fmt.Println("pvc:",v.Name)
 	}
 }
