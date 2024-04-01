@@ -26,7 +26,11 @@ func main() {
 		fmt.Println("asaqweqwe:", err)
 	}
 
-	pvcList,err := clientset.CoreV1().PersistentVolumeClaims("").List(context.TODO(),v1.ListOptions{})
+	storageClassName := "local-path"
+
+	pvcList,err := clientset.CoreV1().PersistentVolumeClaims("").List(context.TODO(),v1.ListOptions{
+		FieldSelector: "spec.storageClassName=" + storageClassName,
+	})
 	if err !=nil{
 		fmt.Println("err:",err)
 	}
