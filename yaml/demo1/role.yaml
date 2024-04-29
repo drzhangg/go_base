@@ -1,0 +1,18 @@
+role:
+  admin:
+    api.clickhouse.v1.ClickhouseService:
+      - create
+      - detail
+      - delete
+      - update
+    api.redis.v1.RedisService:
+      - create
+      - detail
+      - delete
+      - update
+  user:
+    api.clickhouse.v1.ClickhouseService:
+      - create
+      - detail
+      - delete
+      - update
