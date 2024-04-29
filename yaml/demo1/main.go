@@ -75,6 +75,15 @@ func main() {
 
 	deleteValueFromSlice(admin,"api.clickhouse.v1.ClickhouseService","update")
 
+	//user := role.Role["user"]
+
+	/*
+	前端传过来的数据，和configmap里的数据进行对比
+	1.要有个list接口，返回从configmap中获取的role列表
+	2.新接口，在configmap里新增一条数据
+	3.checkbox，通过选中或者取消来修改对
+	 */
+
 	fmt.Println("role",role)
 
 	yamldata,err := yaml.Marshal(&role)
@@ -85,6 +94,7 @@ func main() {
 	//fmt.Println("yaml::",string(yamldata))
 
 	rolecm.Data["role.conf"] = string(yamldata)
+	//rolecm.Data["test.conf"] = "test"
 	//
 	_,err = clientset.CoreV1().ConfigMaps(ns).Update(context.Background(),rolecm,v1.UpdateOptions{})
 	if err!=nil{

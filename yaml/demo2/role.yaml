@@ -1,0 +1,29 @@
+authorities:
+  - role: "admin"
+    verbs:
+      api.clickhouse.v1.ClickhouseService:
+        create: true
+        detail: false
+        list: true
+        update: true
+        delete: false
+      api.redis.v1.RedisService:
+        create: true
+        detail: false
+        list: true
+        update: true
+        delete: false
+  - role: "user"
+    verbs:
+      api.clickhouse.v1.ClickhouseService:
+        create: true
+        detail: false
+        list: true
+        update: true
+        delete: false
+      api.redis.v1.RedisService:
+        create: true
+        detail: false
+        list: true
+        update: true
+        delete: false
