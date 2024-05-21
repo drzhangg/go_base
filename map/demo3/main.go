@@ -15,14 +15,14 @@ func main() {
 	m := map[string]string{}
 	m["name"] = "jerry"
 
-	val,ok := m["name"]
+	val,ok := m["name1"]
 	if val == "jerry"{
 		fmt.Println("val:",val)
 	}else {
-		fmt.Println(val)
+		fmt.Println("false val:",val)
 	}
 
-	fmt.Println(ok)
+	fmt.Println("ok:",ok)
 
 	users := []user{}
 
