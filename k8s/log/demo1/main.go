@@ -16,7 +16,7 @@ import (
 func main() {
 
 	h := os.Getenv("HOME")
-	f := filepath.Join(h, ".kube", "config.conf")
+	f := filepath.Join(h, ".kube", "config")
 	kubeconfig := flag.String("kubeconfig", f, "(optional) absolute path to the kubeconfig file")
 
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
@@ -31,12 +31,12 @@ func main() {
 
 	var line int64 = 1000
 
-	ns := "default"
-	pod := "nginx-5978bb9cc6-qv5hq"
+	ns := "sre"
+	pod := "wakanda-6bdb64767d-j6sgg"
 
 	res, err := clientset.CoreV1().Pods(ns).
 		GetLogs(pod,
-			&v1.PodLogOptions{Follow: true, TailLines: &line}).
+			&v1.PodLogOptions{Follow: true, TailLines: &line,Container: "wakanda"}).
 		Stream(context.Background())
 	if err != nil {
 		fmt.Println("get log err:", err)

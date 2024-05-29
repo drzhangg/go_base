@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"io"
 	"net/http"
 	"path/filepath"
@@ -43,15 +44,7 @@ func main() {
 		panic(err.Error())
 	}
 
-	// 获取指定 Pod 的日志
-	namespace := "sre"
-	podName := "wakanda-6bdb64767d-j6sgg" // 替换为你的 Pod 名称
-
-	podLogOptions := corev1.PodLogOptions{
-		Follow:    true, // 如果需要实时跟踪日志，请将这个设置为 true
-		Container: "wakanda",
-	}
-
+	// HTTP 处理函数
 	http.HandleFunc("/logs", func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
@@ -60,9 +53,19 @@ func main() {
 		}
 		defer conn.Close()
 
+		// 获取 namespace 和 pod name
+		namespace := r.URL.Query().Get("namespace")
+		podName := r.URL.Query().Get("podName")
+		containerName := r.URL.Query().Get("container")
+
+		// 设置日志选项
+		podLogOptions := corev1.PodLogOptions{
+			Follow:    true,
+			Container: containerName,
+		}
+
 		// 创建日志请求
 		request := clientset.CoreV1().Pods(namespace).GetLogs(podName, &podLogOptions)
-
 		podLogs, err := request.Stream(context.Background())
 		if err != nil {
 			conn.WriteMessage(websocket.TextMessage, []byte("Failed to get logs: "+err.Error()))
@@ -70,24 +73,38 @@ func main() {
 		}
 		defer podLogs.Close()
 
-		buf := make([]byte, 1024)
-		for {
-			n, err := podLogs.Read(buf)
-			if err != nil {
-				if err == io.EOF {
+		// 使用 Channel 传输日志数据
+		logChan := make(chan []byte)
+		go func() {
+			buf := make([]byte, 1024)
+			for {
+				n, err := podLogs.Read(buf)
+				if err != nil {
+					if err == io.EOF {
+						close(logChan)
+						break
+					}
+					logChan <- []byte("Error reading logs: " + err.Error())
+					close(logChan)
 					break
 				}
-				conn.WriteMessage(websocket.TextMessage, []byte("Error reading logs: "+err.Error()))
-				return
+				if n > 0 {
+					logChan <- buf[:n]
+				}
 			}
-			if n > 0 {
-				conn.WriteMessage(websocket.TextMessage, buf[:n])
+		}()
+
+		// 通过 WebSocket 实时输出日志数据
+		for msg := range logChan {
+			if err := conn.WriteMessage(websocket.TextMessage, msg); err != nil {
+				fmt.Println("write message error: ", err)
+				break
 			}
 		}
 	})
 
 	// 启动 HTTP 服务器
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":8084", nil); err != nil {
 		panic(err)
 	}
 }
