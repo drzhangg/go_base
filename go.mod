@@ -35,6 +35,7 @@ require (
 	gopkg.in/igm/sockjs-go.v2 v2.1.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/klog v1.0.0
+	k8s.io/metrics v0.29.0
 )
 
 require (
