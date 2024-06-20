@@ -5,6 +5,8 @@ import (
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/cli"
+	"helm.sh/helm/v3/pkg/release"
+	"helm.sh/helm/v3/pkg/releaseutil"
 	"os"
 )
 
@@ -21,7 +23,7 @@ func main() {
 
 	env :=os.Getenv("HELM_DRIVER")
 	fmt.Println("eee:",env)
-	
+
 	fmt.Println(installChart(&DeployRequest{
 		RepoURL:      "http://mirror.azure.cn/kubernetes/charts/",
 		ChartName:    "mysql",
@@ -44,9 +46,12 @@ func installChart(deployRequest *DeployRequest) error {
 	install := action.NewInstall(actionConfig)
 	install.RepoURL = deployRequest.RepoURL
 	install.Version = deployRequest.ChartVersion
-	install.Timeout = 30e9
-	install.CreateNamespace = true
-	install.Wait = true
+	install.DryRun = true
+	install.ClientOnly = true
+	//install.Timeout = 30e9
+	//install.CreateNamespace = true
+	//install.Wait = true
+
 	// k8s中的配置
 	install.Namespace = deployRequest.Namespace
 	install.ReleaseName = deployRequest.ReleaseName
@@ -61,10 +66,20 @@ func installChart(deployRequest *DeployRequest) error {
 		return fmt.Errorf("加载失败\n%s", err)
 	}
 
-	_,err = install.Run(chart,nil)
+	release1,err := install.Run(chart,nil)
 	if err != nil {
 		return fmt.Errorf("执行失败\n%s", err)
 	}
+
+	printReleaseYAML(release1)
 	return nil
+}
+
+func printReleaseYAML(rel *release.Release)  {
+	resources := releaseutil.SplitManifests(rel.Manifest)
+	for _,resource := range resources{
+		fmt.Println("---")
+		fmt.Println(resource)
+	}
 }
 

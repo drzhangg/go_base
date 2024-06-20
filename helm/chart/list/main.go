@@ -22,7 +22,7 @@ func main() {
 
 	// 创建 Helm 的 action 配置
 	actionConfig := new(action.Configuration)
-	if err := actionConfig.Init(settings.RESTClientGetter(), namespace, os.Getenv("HELM_DRIVER"), debug); err != nil {
+	if err := actionConfig.Init(settings.RESTClientGetter(), namespace, "", debug); err != nil {
 		fmt.Printf("Error initializing action configuration: %v\n", err)
 		os.Exit(1)
 	}
