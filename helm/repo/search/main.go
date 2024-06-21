@@ -2,75 +2,59 @@ package main
 
 import (
 	"fmt"
+	"helm.sh/helm/v3/pkg/getter"
 	"log"
 
-	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/cli"
-	"helm.sh/helm/v3/pkg/getter"
 	"helm.sh/helm/v3/pkg/repo"
 )
 
 func main() {
+	// 创建 Helm 的 CLI 环境
 	settings := cli.New()
 
-	// Initialize action configuration
-	actionConfig := new(action.Configuration)
-	if err := actionConfig.Init(settings.RESTClientGetter(), settings.Namespace(), "memory", log.Printf); err != nil {
-		log.Fatalf("Error initializing action configuration: %v", err)
-	}
+	// 获取 Helm 仓库配置文件路径
+	repoFile := settings.RepositoryConfig
 
-	// Add the repository
-	repoEntry := repo.Entry{
-		Name: "azure-mirror",
-		URL:  "http://mirror.azure.cn/kubernetes/charts/",
-	}
-
-	chartRepo, err := repo.NewChartRepository(&repoEntry, getter.All(settings))
+	// 加载 Helm 仓库配置文件
+	repoFileContent, err := repo.LoadFile(repoFile)
 	if err != nil {
-		log.Fatalf("Error creating chart repository: %v", err)
+		log.Fatalf("Failed to load repository file: %v", err)
 	}
 
-	_, err = chartRepo.DownloadIndexFile()
-	if err != nil {
-		log.Fatalf("Error downloading index file: %v", err)
+	// 检查是否有配置的仓库
+	if len(repoFileContent.Repositories) == 0 {
+		fmt.Println("No repositories found")
+		return
 	}
 
-	// Initialize repository file
-	repoFile := repo.NewFile()
-	repoFile.Update(&repoEntry)
-
-	// Write the repository file
-	if err := repoFile.WriteFile(settings.RepositoryConfig, 0644); err != nil {
-		log.Fatalf("Error writing repository file: %v", err)
-	}
-
-	// Load the repository index
-	index, err := repo.LoadIndexFile(settings.RepositoryCache + "/azure-mirror-index.yaml")
-	if err != nil {
-		log.Fatalf("Error loading index file: %v", err)
-	}
-
-	type Description struct {
-		Name string
-		Describe string
-		Version string
-	}
-
-	storeMap := make(map[string]Description)
-	// Search for the chart in the index
-	for name, charts := range index.Entries {
-		//fmt.Printf("name:::%v\n",name)
-
-		ch := charts[0]
-
-
-		//fmt.Println(ch.Name,ch.Description,ch.Version,ch.AppVersion)
-
-		storeMap[name] = Description{
-			Name:     ch.Name,
-			Describe: ch.Description,
-			Version:  ch.AppVersion,
+	// 更新所有仓库
+	for _, re := range repoFileContent.Repositories {
+		fmt.Printf("Updating repository: %s\n", re.Name)
+		chartRepo, err := repo.NewChartRepository(re, getter.All(settings))
+		if err != nil {
+			log.Fatalf("Failed to create chart repository: %v", err)
+		}
+		if _, err := chartRepo.DownloadIndexFile(); err != nil {
+			log.Fatalf("Failed to update repository index: %v", err)
 		}
 	}
-	fmt.Println("mm::",storeMap)
+
+	// 搜索仓库中的 Chart
+	searchTerm := "mysql"
+	fmt.Printf("Searching for charts matching: %s\n", searchTerm)
+	for _, re := range repoFileContent.Repositories {
+		indexFilePath := settings.RepositoryCache + "/" + re.Name + "-index.yaml"
+		indexFile, err := repo.LoadIndexFile(indexFilePath)
+		if err != nil {
+			log.Fatalf("Failed to load index file: %v", err)
+		}
+		for name, entries := range indexFile.Entries {
+			if name == searchTerm {
+				for _, entry := range entries {
+					fmt.Printf("Found chart: %s, version: %s, description: %s\n", name, entry.Version,entry.Description)
+				}
+			}
+		}
+	}
 }

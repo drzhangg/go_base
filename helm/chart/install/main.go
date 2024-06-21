@@ -2,84 +2,94 @@ package main
 
 import (
 	"fmt"
-	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart/loader"
-	"helm.sh/helm/v3/pkg/cli"
-	"helm.sh/helm/v3/pkg/release"
-	"helm.sh/helm/v3/pkg/releaseutil"
+	"log"
 	"os"
+
+	"gopkg.in/yaml.v2"
+	"helm.sh/helm/v3/pkg/action"
+	"helm.sh/helm/v3/pkg/cli"
+	"helm.sh/helm/v3/pkg/cli/values"
+	"helm.sh/helm/v3/pkg/getter"
 )
 
-type DeployRequest struct {
-	RepoURL      string                 // 仓库地址
-	ChartName    string                 // Chart名称
-	ChartVersion string                 // Chart版本
-	Namespace    string                 // 命名空间
-	ReleaseName  string                 // 在kubernetes中的程序名
-	Values       map[string]interface{} // values.yaml 配置文件
-}
-
 func main() {
+	// 定义输入参数
+	mysqlRootPassword := "default-password"
+	mysqlUser := "default-user"
+	mysqlPassword := "default-password"
+	mysqlDatabase := "default-db"
+	chartName := "azure-mirror/mysql"
+	releaseName := "my-release"
+	namespace := "default"
 
-	env :=os.Getenv("HELM_DRIVER")
-	fmt.Println("eee:",env)
+	// 生成 values 字段
+	valuesMap := map[string]interface{}{
+		"mysqlRootPassword": mysqlRootPassword,
+		"mysqlUser":         mysqlUser,
+		"mysqlPassword":     mysqlPassword,
+		"mysqlDatabase":     mysqlDatabase,
+	}
 
-	fmt.Println(installChart(&DeployRequest{
-		RepoURL:      "http://mirror.azure.cn/kubernetes/charts/",
-		ChartName:    "mysql",
-		ChartVersion: "v1",
-		Namespace:    "default",
-		ReleaseName:  "test11",
-		Values:       nil,
-	}))
-}
+	// 将字段转换为 YAML 格式
+	data, err := yaml.Marshal(&valuesMap)
+	if err != nil {
+		log.Fatalf("Error marshaling values to YAML: %v", err)
+	}
 
-func installChart(deployRequest *DeployRequest) error {
+	// 将 YAML 数据写入 values.yaml 文件
+	filePath := "values.yaml"
+	if err := os.WriteFile(filePath, data, 0644); err != nil {
+		log.Fatalf("Error writing values.yaml file: %v", err)
+	}
 
+	fmt.Printf("values.yaml file generated at %s\n", filePath)
+
+	// 设置 Helm 配置
 	settings := cli.New()
 
 	actionConfig := new(action.Configuration)
-	if err := actionConfig.Init(settings.RESTClientGetter(),deployRequest.Namespace,os.Getenv("HELM_DRIVER"),nil);err != nil {
-		return fmt.Errorf("初始化 action 失败\n%s", err)
+	if err := actionConfig.Init(settings.RESTClientGetter(), namespace, os.Getenv("HELM_DRIVER"), log.Printf); err != nil {
+		log.Fatalf("Error initializing action configuration: %v", err)
 	}
 
+	// 创建 Helm install 操作
 	install := action.NewInstall(actionConfig)
-	install.RepoURL = deployRequest.RepoURL
-	install.Version = deployRequest.ChartVersion
+	install.ReleaseName = releaseName
+	install.Namespace = namespace
 	install.DryRun = true
-	install.ClientOnly = true
-	//install.Timeout = 30e9
-	//install.CreateNamespace = true
-	//install.Wait = true
 
-	// k8s中的配置
-	install.Namespace = deployRequest.Namespace
-	install.ReleaseName = deployRequest.ReleaseName
-
-	chartRequested,err := install.ChartPathOptions.LocateChart(deployRequest.ChartName,settings)
-	if err != nil {
-		return fmt.Errorf("下载失败\n%s", err)
+	// 将 values.yaml 文件加载为 Helm values
+	valueOpts := &values.Options{
+		ValueFiles: []string{filePath},
 	}
 
-	chart,err := loader.Load(chartRequested)
+	p := getter.All(settings)
+
+	vals, err := valueOpts.MergeValues(p)
 	if err != nil {
-		return fmt.Errorf("加载失败\n%s", err)
+		log.Fatalf("Error merging values: %v", err)
 	}
 
-	release1,err := install.Run(chart,nil)
+	// 安装 Helm chart
+	chart, err := install.ChartPathOptions.LocateChart(chartName, settings)
 	if err != nil {
-		return fmt.Errorf("执行失败\n%s", err)
+		log.Fatalf("Error locating chart: %v", err)
 	}
 
-	printReleaseYAML(release1)
-	return nil
+	load,err :=loader.Load(chart)
+	if err != nil {
+		log.Fatalf("Error load chart: %v", err)
+	}
+
+	rel, err := install.Run(load, vals)
+	if err != nil {
+		log.Fatalf("Error running Helm install: %v", err)
+	}
+
+	fmt.Printf("Successfully installed release: %s\n", rel.Name)
 }
 
-func printReleaseYAML(rel *release.Release)  {
-	resources := releaseutil.SplitManifests(rel.Manifest)
-	for _,resource := range resources{
-		fmt.Println("---")
-		fmt.Println(resource)
-	}
+func getValuesYaml(valuesMap map[string]interface{}) ([]byte, error) {
+	return yaml.Marshal(valuesMap)
 }
-
