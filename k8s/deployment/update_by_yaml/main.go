@@ -18,14 +18,15 @@ import (
 	"path/filepath"
 )
 
-var podYaml = `
+var deployYaml = `
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: my-deployment
+  name: my-statefulset
   namespace: default
 spec:
-  replicas: 2
+  serviceName: my-statefulset
+  replicas: 3
   selector:
     matchLabels:
       app: my-app
@@ -64,7 +65,7 @@ func main() {
 		return
 	}
 
-	decoder := yaml.NewYAMLOrJSONDecoder(bytes.NewBufferString(podYaml),100)
+	decoder := yaml.NewYAMLOrJSONDecoder(bytes.NewBufferString(deployYaml),100)
 
 	dc := clientset.Discovery()
 
@@ -92,8 +93,6 @@ func main() {
 			return
 		}
 
-		fmt.Println("obj::",obj)
-
 		mapping,err := restMap.RESTMapping(gvk.GroupKind(),gvk.Version)
 		if err != nil {
 			fmt.Println("unstructured decode err:",err)
@@ -114,26 +113,19 @@ func main() {
 		unstruct.Object = unObj
 
 
-		res,err := dynamicClient.Resource(mapping.Resource).Namespace(unstruct.GetNamespace()).Create(context.Background(),&unstruct,v1.CreateOptions{})
+		//res,err := dynamicClient.Resource(mapping.Resource).Namespace(unstruct.GetNamespace()).Create(context.Background(),&unstruct,v1.CreateOptions{})
+		//if err != nil {
+		//	fmt.Println("dynamic create error:",err)
+		//	return
+		//}
+		//
+		//fmt.Println("res:::",res)
+
+		_,err = dynamicClient.Resource(mapping.Resource).Namespace(unstruct.GetNamespace()).Update(context.Background(),&unstruct,v1.UpdateOptions{})
 		if err != nil {
-			fmt.Println("dynamic create error:",err)
+			fmt.Println("dynamic update error:",err)
 			return
 		}
 
-		fmt.Println("res:::",res)
-
 	}
-
-	//decoder := yaml.NewYAMLOrJSONDecoder(bytes.NewBufferString(podYaml),100)
-	//runtimeScheme := runtime.NewScheme()
-	//codecFactory := serializer.NewCodecFactory(runtimeScheme)
-	//decoder.Decode(&runtimeScheme)
-	//
-	//var obj runtime.Unstructured
-	//err = decoder.Decode(&obj)
-	//if err != nil {
-	//	fmt.Println("decode yaml error:",err)
-	//	return
-	//}
-
 }
